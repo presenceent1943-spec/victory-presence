@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>VICTORY PRESENCE</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--ink:#14192b;--ink2:#4a5063;--mute:#8a8f9d;--line:#dcdde2;--paper:#f5f4f0;--card:#fff;--red:#a8281e;--ok:#1d6b45;--warn:#9a6200}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;-webkit-text-size-adjust:100%}
+a{color:inherit}
+header{background:var(--ink);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-family:Georgia,"Times New Roman",serif;font-size:18px;letter-spacing:.14em;font-weight:700}
+.brand small{display:block;font:11px/1.2 inherit;letter-spacing:.2em;color:#a9aec0;font-family:inherit;font-weight:400}
+.who{font-size:13px;color:#c9cddb;text-align:right}
+.who button{margin-left:8px}
+nav{background:#fff;border-bottom:1px solid var(--line);overflow-x:auto;white-space:nowrap;padding:0 10px;position:sticky;top:0;z-index:5}
+nav button{background:none;border:0;border-bottom:2px solid transparent;padding:12px 10px;font:inherit;font-size:14px;color:var(--ink2);cursor:pointer}
+nav button.on{color:var(--ink);border-bottom-color:var(--red);font-weight:600}
+main{max-width:1080px;margin:0 auto;padding:18px 14px 80px}
+h1{font-size:19px;margin:4px 0 4px}
+h2{font-size:15px;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
+.sub{color:var(--mute);font-size:13px;margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);padding:14px;margin:10px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 140px;min-width:0}
+input,select,textarea{font:inherit;padding:9px 10px;border:1px solid #bfc2cb;background:#fff;color:var(--ink);border-radius:2px;max-width:100%}
+textarea{width:100%;min-height:90px}
+input[type=checkbox]{width:18px;height:18px;padding:0}
+button.b{font:inherit;font-size:14px;padding:9px 13px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:2px;cursor:pointer}
+button.b.line{background:#fff;color:var(--ink)}
+button.b.red{background:var(--red);border-color:var(--red)}
+button.b.sm{padding:6px 9px;font-size:13px}
+button:disabled{opacity:.45;cursor:default}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:middle}
+th{font-size:12px;color:var(--ink2);font-weight:600;border-bottom:1px solid var(--ink);white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto;border:1px solid var(--line)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px}
+.chip{border:1px solid #bfc2cb;background:#fff;padding:7px 12px;border-radius:999px;font-size:13px;white-space:nowrap;cursor:pointer;color:var(--ink2)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tag{display:inline-block;font-size:12px;padding:1px 7px;border:1px solid var(--line);color:var(--ink2);border-radius:2px}
+.tag.warn{color:var(--warn);border-color:var(--warn)}.tag.ok{color:var(--ok);border-color:var(--ok)}.tag.red{color:var(--red);border-color:var(--red)}
+.cand{background:#fff;border:1px solid var(--line);padding:13px;margin:8px 0}
+.cand .name{font-weight:600;font-size:16px}
+.cand .meta{color:var(--mute);font-size:13px;margin:2px 0 10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.seg button{flex:1 1 auto;border:1px solid #bfc2cb;background:#fff;padding:8px 6px;font:inherit;font-size:13px;border-radius:2px;cursor:pointer;color:var(--ink2)}
+.seg button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:#fff;padding:14px}
+.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--mute)}
+.pager{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0;font-size:13px;color:var(--ink2)}
+.auth{max-width:380px;margin:8vh auto;padding:0 16px}
+.auth .card{padding:22px}
+.auth input{width:100%;margin:6px 0}
+.auth .b{width:100%;margin-top:10px}
+.auth-title{font-family:Georgia,serif;font-size:30px;letter-spacing:.1em;font-weight:700;line-height:1.15;margin:0 0 6px}
+.rule{width:54px;height:2px;background:var(--red);margin:12px 0 16px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;font-size:14px;border-radius:2px;display:none;z-index:50;max-width:92vw}
+code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all}
+pre{background:#fff;border:1px solid var(--line);padding:12px;overflow-x:auto;font-size:12.5px}
+.empty{color:var(--mute);text-align:center;padding:28px 0}
+@media(max-width:600px){.hide-m{display:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+<script>
+// ───── 연결 설정: Supabase 프로젝트의 URL과 anon 키를 넣습니다 ─────
+const CFG = {
+  url: 'https://elajjhukenjurlrxrgqp.supabase.co',
+  key: 'sb_publishable_vlcNEDMMEKhmsHmSiY4tLg_dVW8nj2y',
+  domain: 'presenceent.com'   // 아이디를 로그인용 주소로 바꿀 때 쓰는 도메인(메일은 발송되지 않음)
+};
+
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => Number(v || 0).toLocaleString('ko-KR');
+const toast = m => { const t = $('#toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => t.style.display = 'none', 2600); };
+const fmt = d => d ? new Date(d).toLocaleString('ko-KR', {timeZone:'Asia/Seoul', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+const kstDate = (off = 0) => new Date(Date.now() + 9*3600e3 + off*864e5).toISOString().slice(0, 10);
+const ST = {unassigned:'보관함', new:'미처리', dm_sent:'DM 보냄', replied:'답장 옴', signed:'영입 완료', rejected:'거절', discarded:'폐기'};
+const MY_ST = ['new','dm_sent','replied','signed','rejected'];
+const PAGE = 20;
+
+if (CFG.url.startsWith('__')) {
+  app.innerHTML = '<div class="auth"><div class="card"><div class="auth-title">VICTORY<br>PRESENCE</div><div class="rule"></div><p>아직 서버가 연결되지 않았습니다. 설치 안내에 따라 Supabase 주소와 키를 넣어 주십시오.</p></div></div>';
+  throw new Error('not configured');
+}
+const sb = supabase.createClient(CFG.url, CFG.key);
+const S = { me:null, tab:null, page:0, my:{st:'new'}, adm:{st:'unassigned', agent:''}, tplId:'', agents:[], tpls:[] };
+const rpc = async (fn, args) => { const { data, error } = await sb.rpc(fn, args); if (error) throw new Error(error.message); return data; };
+const must = r => { if (r.error) throw new Error(r.error.message); return r; };
+const log = (a, d) => sb.rpc('log_access', { p_action:a, p_detail:d || '' }).then(() => {}, () => {});
+const isAdmin = () => S.me && S.me.role === 'admin';
+
+// ───── 로그인 ─────
+function authView(mode = 'in', msg = '') {
+  app.innerHTML = `<div class="auth"><div class="card">
+    <div class="auth-title">VICTORY<br>PRESENCE</div><div class="rule"></div>
+    <p class="sub">틱톡 영입 후보 배정과 크리에이터 관리를 위한 사내 업무 시스템입니다. 모든 열람과 변경은 기록됩니다.</p>
+    <form id="af">
+      <input name="id" placeholder="아이디" autocomplete="username" autocapitalize="none" required>
+      ${mode === 'up' ? '<input name="name" placeholder="이름 (활동명)" required>' : ''}
+      <input name="pw" type="password" placeholder="비밀번호" autocomplete="${mode === 'up' ? 'new-password' : 'current-password'}" required>
+      <button class="b">${mode === 'up' ? '가입 신청' : '로그인'}</button>
+    </form>
+    <p class="sub" style="margin-top:12px;color:var(--red)">${esc(msg)}</p>
+    <p class="sub" style="margin:8px 0 0"><a href="#" id="sw">${mode === 'up' ? '이미 계정이 있습니다 · 로그인' : '계정이 없습니다 · 가입 신청'}</a></p>
+  </div></div>`;
+  $('#sw').onclick = e => { e.preventDefault(); authView(mode === 'up' ? 'in' : 'up'); };
+  $('#af').onsubmit = async e => {
+    e.preventDefault();
+    const f = new FormData(e.target), id = String(f.get('id')).trim().toLowerCase(), pw = String(f.get('pw'));
+    if (!/^[a-z0-9_]{3,20}$/.test(id)) return authView(mode, '아이디는 영문 소문자·숫자·밑줄 3~20자로 입력해 주십시오.');
+    if (pw.length < 6) return authView(mode, '비밀번호는 6자 이상이어야 합니다.');
+    const email = `${id}@${CFG.domain}`;
+    e.target.querySelector('button').disabled = true;
+    if (mode === 'up') {
+      const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { login_id: id, name: String(f.get('name')).trim() } } });
+      if (error) return authView(mode, /registered/i.test(error.message) ? '이미 사용 중인 아이디입니다.' : '가입 신청에 실패했습니다: ' + error.message);
+      if (!data.session) return authView('in', '가입 신청이 접수되었습니다. 로그인해 주십시오.');
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+      if (error) return authView(mode, '아이디 또는 비밀번호가 올바르지 않습니다.');
+      log('로그인');
+    }
+    boot();
+  };
+}
+
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return authView();
+  const { data: me } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+  if (!me) { await sb.auth.signOut(); return authView('in', '계정을 찾을 수 없습니다.'); }
+  S.me = me;
+  if (me.status !== 'approved') {
+    const m = { pending:'가입 신청이 접수되었습니다. 대표관리자 승인 후 이용하실 수 있습니다.', suspended:'정지된 계정입니다. 대표관리자에게 문의해 주십시오.', rejected:'가입 신청이 거절되었습니다.' }[me.status];
+    app.innerHTML = `<div class="auth"><div class="card"><div class="auth-title">VICTORY<br>PRESENCE</div><div class="rule"></div><p>${m}</p><button class="b line" id="out">로그아웃</button></div></div>`;
+    $('#out').onclick = async () => { await sb.auth.signOut(); authView(); };
+    return;
+  }
+  rpc('tick').catch(() => {});
+  S.tab = isAdmin() ? 'dash' : 'my';
+  shell();
+}
+
+const TABS = () => isAdmin()
+  ? [['dash','대시보드'],['pool','후보 배분'],['rules','배분 규칙'],['users','계정'],['stats','성과'],['my','내 후보'],['care','관리 DB'],['block','차단 목록'],['tpl','멘트'],['logs','기록'],['link','연동 설정']]
+  : [['my','내 후보'],['care','관리 DB'],['tpl','멘트']];
+
+function shell() {
+  app.innerHTML = `<header><div class="brand">VICTORY PRESENCE<small>${isAdmin() ? '대표관리자' : '에이전트'}</small></div>
+    <div class="who">${esc(S.me.name || S.me.login_id)}<button class="b sm line" data-act="logout">로그아웃</button></div></header>
+    <nav>${TABS().map(([k, v]) => `<button data-tab="${k}" class="${S.tab === k ? 'on' : ''}">${v}</button>`).join('')}</nav><main id="main"></main>`;
+  render();
+}
+const VIEWS = {};
+async function render() {
+  const m = $('#main'); if (!m) return;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
+  try { m.innerHTML = await VIEWS[S.tab](); } catch (e) { m.innerHTML = `<div class="card">불러오지 못했습니다: ${esc(e.message)}</div>`; }
+}
+const pager = total => { const pages = Math.max(1, Math.ceil(total / PAGE));
+  return `<div class="pager"><button class="b sm line" data-act="page" data-d="-1" ${S.page <= 0 ? 'disabled' : ''}>이전</button><span>${S.page + 1} / ${pages} · 총 ${num(total)}건</span><button class="b sm line" data-act="page" data-d="1" ${S.page >= pages - 1 ? 'disabled' : ''}>다음</button></div>`; };
+async function loadAgents() { S.agents = must(await sb.from('profiles').select('*').order('created_at')).data; return S.agents; }
+async function loadTpls() { S.tpls = must(await sb.from('templates').select('*').order('owner', { nullsFirst: true }).order('id')).data; return S.tpls; }
+const agentName = id => { const a = S.agents.find(x => x.id === id); return a ? (a.name || a.login_id) : ''; };
+const agentOpts = (sel, blank) => `${blank ? `<option value="">${blank}</option>` : ''}${S.agents.filter(a => a.status === 'approved').map(a => `<option value="${a.id}" ${sel === a.id ? 'selected' : ''}>${esc(a.name || a.login_id)} (${esc(a.login_id)})</option>`).join('')}`;
+
+// ───── 내 후보 ─────
+VIEWS.my = async () => {
+  log('열람', `내 후보 · ${ST[S.my.st]} · ${S.page + 1}쪽`);
+  const uid = S.me.id;
+  const counts = await Promise.all(MY_ST.map(s => sb.from('candidates').select('id', { count:'exact', head:true }).eq('assigned_to', uid).eq('status', s)));
+  const r = must(await sb.from('candidates').select('*', { count:'exact' }).eq('assigned_to', uid).eq('status', S.my.st)
+    .order('assigned_at', { ascending:false }).order('id').range(S.page * PAGE, S.page * PAGE + PAGE - 1));
+  await loadTpls();
+  if (!S.tpls.find(t => String(t.id) === String(S.tplId))) S.tplId = S.tpls[0] ? String(S.tpls[0].id) : '';
+  const soon = c => c.status === 'new' && c.assigned_at && Date.now() - new Date(c.assigned_at) > 864e5;
+  return `<h1>내 후보</h1><p class="sub">배정받고 2일 안에 DM을 보내고 체크하지 않으면 자동으로 회수됩니다.</p>
+  <div class="chips">${MY_ST.map((s, i) => `<span class="chip ${S.my.st === s ? 'on' : ''}" data-act="myst" data-s="${s}">${ST[s]} ${num(counts[i].count)}</span>`).join('')}</div>
+  <div class="card row"><span>사용할 멘트</span><select id="tplSel" class="grow" data-chg="tplsel">${S.tpls.length ? S.tpls.map(t => `<option value="${t.id}" ${String(t.id) === S.tplId ? 'selected' : ''}>${t.owner ? '' : '[공용] '}${esc(t.title || '제목 없음')}</option>`).join('') : '<option value="">등록된 멘트가 없습니다</option>'}</select></div>
+  ${r.data.length ? r.data.map(c => `<div class="cand">
+    <div class="row"><span class="name grow">${esc(c.nickname || c.tiktok_id)}</span>${soon(c) ? '<span class="tag warn">내일 회수됩니다</span>' : ''}</div>
+    <div class="meta"><a href="${esc(c.profile_url)}" target="_blank" rel="noopener">@${esc(c.tiktok_id)}</a>${c.last_live ? ' · 마지막 라이브 ' + esc(c.last_live) : ''} · 배정 ${fmt(c.assigned_at)}</div>
+    <div class="row"><a class="b sm line" style="text-decoration:none" href="${esc(c.profile_url)}" target="_blank" rel="noopener">틱톡 프로필</a>
+      <button class="b sm" data-act="copy" data-nick="${esc(c.nickname || c.tiktok_id)}">멘트 복사</button></div>
+    <div class="seg">${MY_ST.map(s => `<button class="${c.status === s ? 'on' : ''}" data-act="setst" data-id="${c.id}" data-s="${s}">${ST[s]}</button>`).join('')}</div>
+    <div class="row"><input class="grow" placeholder="인스타 아이디" value="${esc(c.insta)}" data-f="insta"><input class="grow" placeholder="메모" value="${esc(c.memo)}" data-f="memo"><button class="b sm line" data-act="note" data-id="${c.id}">저장</button></div>
+  </div>`).join('') : '<div class="empty">해당하는 후보가 없습니다.</div>'}
+  ${pager(r.count || 0)}
+  <h2>직접 찾은 후보 등록</h2><p class="sub">이미 배정되었거나 차단된 사람은 등록되지 않습니다. 등록되면 본인 몫으로 선점됩니다.</p>
+  <div class="card row"><input id="clId" class="grow" placeholder="틱톡 아이디 또는 프로필 링크"><input id="clNick" class="grow" placeholder="닉네임 (선택)"><button class="b" data-act="claim">등록</button></div>`;
+};
+
+// ───── 관리 DB ─────
+VIEWS.care = async () => {
+  log('열람', '관리 DB');
+  if (isAdmin()) await loadAgents();
+  let q = sb.from('creators').select('*').order('diamonds', { ascending:false }).order('id').limit(1000);
+  if (!isAdmin()) q = q.gt('hours', 0);
+  const rows = must(await q).data;
+  return `<h1>관리 데이터베이스</h1><p class="sub">${isAdmin() ? '방송 데이터는 갱신 즉시 담당 에이전트에게 공개됩니다. 담당 에이전트는 여기서 지정합니다.' : '담당 크리에이터 현황입니다. 방송 시간이 있는 크리에이터만 다이아 많은 순으로 표시됩니다.'}</p>
+  ${isAdmin() ? `<div class="card row"><span class="grow">엑셀·CSV 업로드 (열: 아이디, 크리에이터, 방송 시간, 방송 일수, 다이아, 리그)</span><input type="file" accept=".xlsx,.xls,.csv" data-chg="upcare"></div>` : ''}
+  <div class="scroll"><table><tr><th>크리에이터</th>${isAdmin() ? '<th>담당 에이전트</th>' : ''}<th class="n">방송 시간</th><th class="n">방송 일수</th><th class="n">다이아</th><th>리그</th></tr>
+  ${rows.length ? rows.map(c => `<tr><td>${esc(c.nickname || c.tiktok_id)}<br><span class="sub">@${esc(c.tiktok_id)}</span></td>
+    ${isAdmin() ? `<td><select data-chg="careagent" data-id="${c.id}">${agentOpts(c.agent_id, '미지정')}</select></td>` : ''}
+    <td class="n">${num(c.hours)}</td><td class="n">${num(c.days)}</td><td class="n">${num(c.diamonds)}</td><td>${esc(c.league)}</td></tr>`).join('') : `<tr><td colspan="6" class="empty">표시할 크리에이터가 없습니다.</td></tr>`}
+  </table></div>`;
+};
+
+// ───── 멘트 ─────
+VIEWS.tpl = async () => {
+  await loadTpls();
+  const mine = t => t.owner === S.me.id || (isAdmin() && !t.owner);
+  return `<h1>DM 멘트</h1><p class="sub">멘트 안에 {닉네임}을 쓰면 복사할 때 후보의 닉네임으로 바뀝니다.</p>
+  ${S.tpls.map(t => `<div class="card"><div class="row"><b class="grow">${esc(t.title || '제목 없음')}</b><span class="tag ${t.owner ? '' : 'ok'}">${t.owner ? '내 멘트' : '공용'}</span>${mine(t) ? `<button class="b sm line" data-act="tpldel" data-id="${t.id}">삭제</button>` : ''}</div><p style="white-space:pre-wrap;margin:8px 0 0">${esc(t.body)}</p></div>`).join('') || '<div class="empty">등록된 멘트가 없습니다.</div>'}
+  <h2>멘트 추가</h2><div class="card"><input id="tTitle" placeholder="제목" style="width:100%;margin-bottom:8px"><textarea id="tBody" placeholder="멘트 내용"></textarea>
+  <div class="row" style="margin-top:8px">${isAdmin() ? '<label class="row"><input type="checkbox" id="tPub" checked> 공용 멘트로 등록</label>' : ''}<span class="grow"></span><button class="b" data-act="tpladd">저장</button></div></div>`;
+};
+
+// ───── 대표관리자: 대시보드 ─────
+VIEWS.dash = async () => {
+  const d = await rpc('admin_dashboard');
+  return `<h1>대시보드</h1><p class="sub">추출 19 · 22 · 09시 / 자동 배분 매일 10시 · 마지막 자동 배분 ${esc(d.last_distribution || '없음')}</p>
+  <div class="kpis"><div class="kpi"><b>${num(d.extracted_today)}</b><span>오늘 추출</span></div><div class="kpi"><b>${num(d.assigned_today)}</b><span>오늘 배분</span></div>
+  <div class="kpi"><b>${num(d.unassigned)}</b><span>보관함 잔량</span></div><div class="kpi"><b>${num(d.reclaimed_today)}</b><span>오늘 회수</span></div>
+  <div class="kpi"><b>${num(d.discarded_today)}</b><span>오늘 폐기</span></div><div class="kpi"><b>${num(d.pending_users)}</b><span>가입 승인 대기</span></div></div>
+  <h2>오늘 추출 회차</h2><div class="scroll"><table><tr><th>회차</th><th class="n">등록 수</th></tr>${d.batches.length ? d.batches.map(b => `<tr><td>${esc(b.batch || '구분 없음')}</td><td class="n">${num(b.n)}</td></tr>`).join('') : '<tr><td colspan="2" class="empty">오늘 등록된 추출분이 없습니다.</td></tr>'}</table></div>
+  <p class="sub" style="margin-top:14px">전체 후보 ${num(d.total)}건</p>`;
+};
+
+// ───── 대표관리자: 후보 배분 ─────
+VIEWS.pool = async () => {
+  await loadAgents();
+  let q = sb.from('candidates').select('*', { count:'exact' });
+  if (S.adm.st) q = q.eq('status', S.adm.st);
+  if (S.adm.agent) q = q.eq('assigned_to', S.adm.agent);
+  const r = must(await q.order('extracted_at', { ascending:false }).order('id').range(S.page * PAGE, S.page * PAGE + PAGE - 1));
+  const pool = (await sb.from('candidates').select('id', { count:'exact', head:true }).eq('status', 'unassigned')).count;
+  return `<h1>후보 배분</h1><p class="sub">보관함 ${num(pool)}건 · 한 후보는 한 사람에게만 배정됩니다.</p>
+  <div class="card"><b>수량 배분</b><div class="row" style="margin-top:8px"><select id="anAgent" class="grow">${agentOpts('', '에이전트 선택')}</select><input id="anN" type="number" min="1" value="100" style="width:100px"><button class="b" data-act="assignn">개 배분</button></div></div>
+  <div class="card row"><span class="grow">후보 엑셀·CSV 업로드 (열: 아이디, 고유번호, 닉네임, 마지막 라이브)</span><input type="file" accept=".xlsx,.xls,.csv" data-chg="upcand"><button class="b sm line" data-act="export">전체 내보내기</button></div>
+  <div class="row" style="margin:14px 0 8px"><select data-chg="admst">${['', ...Object.keys(ST)].map(s => `<option value="${s}" ${S.adm.st === s ? 'selected' : ''}>${s ? ST[s] : '전체 상태'}</option>`).join('')}</select>
+    <select data-chg="admagent">${agentOpts(S.adm.agent, '전체 에이전트')}</select></div>
+  <div class="row" style="margin-bottom:8px"><select id="selAgent" class="grow">${agentOpts('', '선택한 후보를 보낼 에이전트')}</select><button class="b sm" data-act="assignids">선택 배정</button><button class="b sm line" data-act="reclaimids">선택 회수</button></div>
+  <div class="scroll"><table><tr><th><input type="checkbox" data-chg="checkall"></th><th>후보</th><th>상태</th><th>담당</th><th class="hide-m">마지막 라이브</th><th class="hide-m">회차</th><th class="n hide-m">재배분</th></tr>
+  ${r.data.length ? r.data.map(c => `<tr><td><input type="checkbox" class="ck" value="${c.id}"></td><td>${esc(c.nickname || c.tiktok_id)}<br><a class="sub" href="${esc(c.profile_url)}" target="_blank" rel="noopener">@${esc(c.tiktok_id)}</a></td>
+    <td><span class="tag">${ST[c.status]}</span></td><td>${esc(agentName(c.assigned_to))}</td><td class="hide-m">${esc(c.last_live || '')}</td><td class="hide-m">${esc(c.batch)}<br><span class="sub">${fmt(c.extracted_at)}</span></td><td class="n hide-m">${c.reassign_count}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">해당하는 후보가 없습니다.</td></tr>'}
+  </table></div>${pager(r.count || 0)}`;
+};
+
+// ───── 대표관리자: 배분 규칙 ─────
+VIEWS.rules = async () => {
+  await loadAgents();
+  const list = S.agents.filter(a => a.status === 'approved');
+  const last = must(await sb.from('settings').select('value').eq('key', 'last_distribution').maybeSingle()).data;
+  return `<h1>자동 배분 규칙</h1><p class="sub">매일 오전 10시에 아래 수량대로 자동 배분됩니다. 남는 후보는 보관함에 남습니다. 마지막 자동 배분: ${esc(last?.value || '없음')}</p>
+  <div class="scroll"><table><tr><th>아이디</th><th>이름</th><th class="n">하루 배분 수</th></tr>
+  ${list.map(a => `<tr><td>${esc(a.login_id)}</td><td>${esc(a.name)}</td><td class="n"><input type="number" min="0" class="quota" data-id="${a.id}" value="${a.daily_quota}" style="width:100px;text-align:right"></td></tr>`).join('')}
+  <tr><th colspan="2">합계</th><th class="n">${num(list.reduce((s, a) => s + a.daily_quota, 0))}</th></tr></table></div>
+  <div class="row" style="margin-top:12px"><button class="b" data-act="saverules">규칙 저장</button><span class="grow"></span><button class="b line" data-act="distnow">지금 배분 실행</button></div>`;
+};
+
+// ───── 대표관리자: 계정 ─────
+VIEWS.users = async () => {
+  await loadAgents();
+  const tag = { pending:'<span class="tag warn">승인 대기</span>', approved:'<span class="tag ok">승인됨</span>', suspended:'<span class="tag red">정지</span>', rejected:'<span class="tag">거절</span>' };
+  return `<h1>계정 관리</h1><p class="sub">가입 신청은 승인해야 접속할 수 있습니다. 정지하면 즉시 접속이 차단됩니다.</p>
+  ${S.agents.map(a => `<div class="card"><div class="row"><b class="grow">${esc(a.name || a.login_id)} <span class="sub">${esc(a.login_id)}</span></b>${a.role === 'admin' ? '<span class="tag">대표관리자</span>' : tag[a.status]}</div>
+    ${a.role === 'admin' ? '' : `<div class="row" style="margin-top:10px">
+      ${a.status === 'pending' ? `<button class="b sm" data-act="ust" data-id="${a.id}" data-s="approved">승인</button><button class="b sm line" data-act="ust" data-id="${a.id}" data-s="rejected">거절</button>` : ''}
+      ${a.status === 'approved' ? `<button class="b sm red" data-act="ust" data-id="${a.id}" data-s="suspended">정지</button>` : ''}
+      ${a.status === 'suspended' || a.status === 'rejected' ? `<button class="b sm" data-act="ust" data-id="${a.id}" data-s="approved">${a.status === 'suspended' ? '재개' : '승인'}</button>` : ''}
+      <label class="row"><input type="checkbox" data-chg="viewall" data-id="${a.id}" ${a.can_view_all ? 'checked' : ''}> 전체 보기 허용</label><span class="grow"></span>
+      <button class="b sm line" data-act="upw" data-id="${a.id}">비밀번호 초기화</button><button class="b sm line" data-act="udel" data-id="${a.id}" data-n="${esc(a.login_id)}">삭제</button></div>`}
+  </div>`).join('')}`;
+};
+
+// ───── 대표관리자: 성과 ─────
+VIEWS.stats = async () => {
+  S.sf = S.sf || kstDate(-6); S.stt = S.stt || kstDate();
+  const rows = await rpc('admin_stats', { p_from: S.sf, p_to: S.stt });
+  const pct = (a, b) => Number(b) ? (Number(a) / Number(b) * 100).toFixed(1) + '%' : '-';
+  return `<h1>에이전트별 성과</h1><div class="row" style="margin:10px 0"><input type="date" id="sf" value="${S.sf}"><span>~</span><input type="date" id="st" value="${S.stt}"><button class="b sm" data-act="statgo">조회</button></div>
+  <div class="scroll"><table><tr><th>에이전트</th><th class="n">받은 수</th><th class="n">DM 보냄</th><th class="n">답장</th><th class="n">영입 완료</th><th class="n">거절</th><th class="n">회수됨</th><th class="n">보유 중</th><th class="n">전환율</th></tr>
+  ${rows.map(r => `<tr><td>${esc(r.name || r.login_id)}</td><td class="n">${num(r.received)}</td><td class="n">${num(r.dm_sent)}</td><td class="n">${num(r.replied)}</td><td class="n">${num(r.signed)}</td><td class="n">${num(r.rejected)}</td><td class="n">${num(r.reclaimed)}</td><td class="n">${num(r.holding)}</td><td class="n">${pct(r.signed, r.received)}</td></tr>`).join('')}
+  </table></div><p class="sub" style="margin-top:8px">전환율 = 영입 완료 ÷ 받은 수 (선택한 기간 기준)</p>`;
+};
+
+// ───── 대표관리자: 차단 목록 ─────
+VIEWS.block = async () => {
+  const r = must(await sb.from('blocklist').select('*', { count:'exact' }).order('id', { ascending:false }).range(S.page * PAGE, S.page * PAGE + PAGE - 1));
+  return `<h1>차단 목록</h1><p class="sub">여기 있는 사람은 추출되어도 후보로 등록되지 않습니다. 소속 크리에이터는 관리 DB 기준으로 따로 자동 차단됩니다.</p>
+  <div class="card"><b>과거 추출분 올리기</b><div class="row" style="margin-top:8px"><span class="grow">지금까지 나간 엑셀·CSV (열: 아이디, 고유번호)</span><input type="file" accept=".xlsx,.xls,.csv" multiple data-chg="upblock"></div></div>
+  <div class="card"><b>직접 차단</b><div class="row" style="margin-top:8px"><input id="bId" class="grow" placeholder="틱톡 아이디 또는 링크"><input id="bNote" class="grow" placeholder="사유 (선택)"><button class="b" data-act="blockadd">차단</button></div></div>
+  <div class="scroll"><table><tr><th>아이디</th><th>고유번호</th><th>구분</th><th>사유</th><th></th></tr>
+  ${r.data.length ? r.data.map(b => `<tr><td>${esc(b.tiktok_id)}</td><td class="mono">${esc(b.tiktok_uid || '')}</td><td>${b.reason === 'past' ? '과거 추출분' : '직접 차단'}</td><td>${esc(b.note)}</td><td><button class="b sm line" data-act="blockdel" data-id="${b.id}">해제</button></td></tr>`).join('') : '<tr><td colspan="5" class="empty">차단된 사람이 없습니다.</td></tr>'}
+  </table></div>${pager(r.count || 0)}`;
+};
+
+// ───── 대표관리자: 기록 / 연동 ─────
+VIEWS.logs = async () => {
+  const r = must(await sb.from('access_logs').select('*', { count:'exact' }).order('id', { ascending:false }).range(S.page * PAGE, S.page * PAGE + PAGE - 1));
+  return `<h1>접속·열람 기록</h1><div class="scroll"><table><tr><th>시각</th><th>아이디</th><th>행동</th><th>내용</th></tr>
+  ${r.data.map(l => `<tr><td>${fmt(l.at)}</td><td>${esc(l.login_id)}</td><td>${esc(l.action)}</td><td>${esc(l.detail)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">기록이 없습니다.</td></tr>'}</table></div>${pager(r.count || 0)}`;
+};
+VIEWS.link = async () => {
+  const k = must(await sb.from('settings').select('value').eq('key', 'ingest_key').maybeSingle()).data?.value || '';
+  const ex = fn => `POST ${CFG.url}/rest/v1/rpc/${fn}\napikey: (anon 키)\nContent-Type: application/json`;
+  return `<h1>연동 설정</h1><p class="sub">추출 프로그램이 후보와 관리 DB를 올릴 때 쓰는 키입니다. 외부에 노출하지 마십시오.</p>
+  <div class="card"><b>연동 키</b><p class="mono">${esc(k)}</p><button class="b sm line" data-act="copykey" data-k="${esc(k)}">복사</button> <button class="b sm line" data-act="newkey">새 키 발급</button></div>
+  <h2>후보 등록</h2><pre>${esc(ex('ingest_candidates'))}\n\n{"p_key":"연동 키","p_batch":"11-15 19시","p_rows":[{"tiktok_id":"아이디","tiktok_uid":"고유번호","nickname":"닉네임","last_live":"2026-11-15"}]}</pre>
+  <h2>관리 DB 갱신</h2><pre>${esc(ex('ingest_creators'))}\n\n{"p_key":"연동 키","p_rows":[{"tiktok_id":"아이디","nickname":"활동명","hours":12.5,"days":4,"diamonds":35000,"league":"A1"}]}</pre>
+  <h2>알림용 요약</h2><pre>${esc(ex('notify_summary'))}\n\n{"p_key":"연동 키"}</pre>`;
+};
+
+// ───── 엑셀·CSV 읽기 ─────
+let xlsxLoading;
+const loadXlsx = () => xlsxLoading || (xlsxLoading = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'; s.onload = res; s.onerror = () => rej(new Error('엑셀 읽기 도구를 불러오지 못했습니다')); document.head.appendChild(s); }));
+const COLS = {
+  tiktok_id: ['틱톡아이디','아이디','tiktokid','id','username','유저네임','크리에이터아이디','creatorid','uniqueid','링크','프로필링크','url','profileurl'],
+  tiktok_uid: ['고유번호','계정고유번호','uid','userid','tiktokuid','secuid'],
+  nickname: ['닉네임','크리에이터','활동명','nickname','이름','name'],
+  last_live: ['마지막라이브','마지막라이브날짜','라이브날짜','lastlive','날짜','date'],
+  insta: ['인스타','인스타아이디','instagram','insta'],
+  hours: ['방송시간','hours','livehours'], days: ['방송일수','days','livedays'],
+  diamonds: ['다이아','다이아몬드','diamonds'], league: ['리그','league'], note: ['사유','메모','note']
+};
+async function readSheet(file) {
+  await loadXlsx();
+  const wb = XLSX.read(await file.arrayBuffer(), { cellDates:true });
+  const out = [];
+  for (const name of wb.SheetNames) for (const row of XLSX.utils.sheet_to_json(wb.Sheets[name], { defval:'', raw:false })) {
+    const o = {};
+    for (const [k, v] of Object.entries(row)) {
+      const h = String(k).toLowerCase().replace(/[\s_\-()]/g, '');
+      for (const [f, names] of Object.entries(COLS)) if (o[f] === undefined && names.includes(h)) o[f] = String(v).trim();
+    }
+    if (o.tiktok_id || o.tiktok_uid) out.push(o);
+  }
+  return out;
+}
+const chunks = (a, n = 500) => { const r = []; for (let i = 0; i < a.length; i += n) r.push(a.slice(i, i + n)); return r; };
+const sum = (t, r) => { for (const k in r) t[k] = (t[k] || 0) + r[k]; return t; };
+
+// ───── 동작 ─────
+const ACT = {
+  logout: async () => { await sb.auth.signOut(); S.me = null; authView(); },
+  page: el => { S.page += Number(el.dataset.d); render(); window.scrollTo(0, 0); },
+  myst: el => { S.my.st = el.dataset.s; S.page = 0; render(); },
+  setst: async el => { await rpc('set_status', { p_id: Number(el.dataset.id), p_status: el.dataset.s }); toast(ST[el.dataset.s] + '(으)로 변경했습니다'); render(); },
+  note: async el => { const c = el.closest('.cand'); await rpc('set_note', { p_id: Number(el.dataset.id), p_insta: c.querySelector('[data-f=insta]').value, p_memo: c.querySelector('[data-f=memo]').value }); toast('저장했습니다'); },
+  copy: async el => { const t = S.tpls.find(x => String(x.id) === String(S.tplId)); if (!t) return toast('먼저 멘트를 등록해 주십시오'); await navigator.clipboard.writeText(t.body.replaceAll('{닉네임}', el.dataset.nick)); toast('멘트를 복사했습니다'); },
+  claim: async () => { const id = $('#clId').value.trim(); if (!id) return; const r = await rpc('agent_claim', { p_tiktok_id: id, p_tiktok_uid: '', p_nickname: $('#clNick').value.trim() });
+    toast({ inserted:'등록했습니다. 내 후보에 추가되었습니다', revived:'등록했습니다. 내 후보에 추가되었습니다', duplicate:'이미 등록된 후보입니다', blocked:'차단되었거나 이미 소속된 사람입니다', invalid:'아이디를 확인해 주십시오' }[r]); S.my.st = 'new'; render(); },
+  tpladd: async () => { const body = $('#tBody').value.trim(); if (!body) return toast('멘트 내용을 입력해 주십시오'); const pub = isAdmin() && $('#tPub').checked;
+    must(await sb.from('templates').insert({ owner: pub ? null : S.me.id, title: $('#tTitle').value.trim(), body })); toast('저장했습니다'); render(); },
+  tpldel: async el => { if (!confirm('이 멘트를 삭제할까요?')) return; must(await sb.from('templates').delete().eq('id', el.dataset.id)); render(); },
+  assignn: async () => { const a = $('#anAgent').value, n = Number($('#anN').value); if (!a || !(n > 0)) return toast('에이전트와 수량을 정해 주십시오'); const r = await rpc('admin_assign_n', { p_agent: a, p_n: n }); toast(`${num(r)}개 배분했습니다`); render(); },
+  assignids: async () => { const ids = [...document.querySelectorAll('.ck:checked')].map(x => Number(x.value)), a = $('#selAgent').value; if (!ids.length || !a) return toast('후보와 에이전트를 선택해 주십시오'); const r = await rpc('admin_assign_ids', { p_agent: a, p_ids: ids }); toast(`${num(r)}건 배정했습니다`); render(); },
+  reclaimids: async () => { const ids = [...document.querySelectorAll('.ck:checked')].map(x => Number(x.value)); if (!ids.length) return toast('후보를 선택해 주십시오'); const r = await rpc('admin_reclaim_ids', { p_ids: ids }); toast(`${num(r)}건 회수했습니다`); render(); },
+  export: async () => { let all = [], from = 0; for (;;) { const r = must(await sb.from('candidates').select('tiktok_id,tiktok_uid,nickname,status,assigned_to,last_live,batch,insta,memo').order('id').range(from, from + 999)); all = all.concat(r.data); if (r.data.length < 1000) break; from += 1000; }
+    const csv = '﻿아이디,고유번호,닉네임,상태,담당,마지막 라이브,회차,인스타,메모\n' + all.map(c => [c.tiktok_id, c.tiktok_uid, c.nickname, ST[c.status], agentName(c.assigned_to), c.last_live, c.batch, c.insta, c.memo].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' })); a.download = `후보_${kstDate()}.csv`; a.click(); log('내보내기', `후보 ${all.length}건`); },
+  saverules: async () => { for (const i of document.querySelectorAll('.quota')) must(await sb.from('profiles').update({ daily_quota: Math.max(0, Math.floor(Number(i.value) || 0)) }).eq('id', i.dataset.id)); toast('규칙을 저장했습니다'); render(); },
+  distnow: async () => { if (!confirm('지금 규칙대로 배분을 실행할까요? 오늘 이미 배분했더라도 한 번 더 나갑니다.')) return; const r = await rpc('admin_distribute_now'); toast(`${num(r)}개 배분했습니다`); render(); },
+  ust: async el => { must(await sb.from('profiles').update({ status: el.dataset.s }).eq('id', el.dataset.id)); toast('변경했습니다'); render(); },
+  upw: async el => { const p = prompt('새 비밀번호 (6자 이상)'); if (!p) return; await rpc('admin_reset_password', { p_user: el.dataset.id, p_password: p }); toast('비밀번호를 바꿨습니다'); },
+  udel: async el => { if (!confirm(`${el.dataset.n} 계정을 삭제할까요? 보유 중인 후보는 보관함으로 돌아갑니다.`)) return; await rpc('admin_delete_user', { p_user: el.dataset.id }); toast('삭제했습니다'); render(); },
+  statgo: () => { S.sf = $('#sf').value; S.stt = $('#st').value; render(); },
+  blockadd: async () => { const id = $('#bId').value.trim(); if (!id) return; const r = await rpc('admin_import_blocklist', { p_rows: [{ tiktok_id: id, note: $('#bNote').value.trim() }], p_reason: 'manual' }); toast(r.added ? '차단했습니다' : '이미 차단된 사람입니다'); render(); },
+  blockdel: async el => { if (!confirm('차단을 해제할까요?')) return; must(await sb.from('blocklist').delete().eq('id', el.dataset.id)); render(); },
+  copykey: async el => { await navigator.clipboard.writeText(el.dataset.k); toast('복사했습니다'); },
+  newkey: async () => { if (!confirm('새 키를 발급하면 기존 키로는 등록할 수 없게 됩니다. 계속할까요?')) return; const k = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''); must(await sb.from('settings').update({ value: k }).eq('key', 'ingest_key')); render(); }
+};
+const CHG = {
+  tplsel: el => { S.tplId = el.value; },
+  admst: el => { S.adm.st = el.value; S.page = 0; render(); },
+  admagent: el => { S.adm.agent = el.value; S.page = 0; render(); },
+  checkall: el => document.querySelectorAll('.ck').forEach(c => c.checked = el.checked),
+  viewall: async el => { must(await sb.from('profiles').update({ can_view_all: el.checked }).eq('id', el.dataset.id)); toast('변경했습니다'); },
+  careagent: async el => { must(await sb.from('creators').update({ agent_id: el.value || null }).eq('id', el.dataset.id)); toast('담당을 변경했습니다'); },
+  upcand: async el => { const rows = await readSheet(el.files[0]); if (!rows.length) return toast('읽을 수 있는 행이 없습니다. 열 이름을 확인해 주십시오'); const t = {}; for (const c of chunks(rows)) sum(t, await rpc('admin_import_candidates', { p_rows: c, p_batch: '업로드 ' + kstDate() })); alert(`신규 ${num(t.inserted)}건 · 중복 제외 ${num(t.duplicate)}건 · 차단 제외 ${num(t.blocked)}건 · 복귀 ${num(t.revived)}건`); render(); },
+  upblock: async el => { const t = {}; for (const f of el.files) { const rows = await readSheet(f); for (const c of chunks(rows)) sum(t, await rpc('admin_import_blocklist', { p_rows: c, p_reason: 'past' })); } alert(`차단 목록에 ${num(t.added)}건 추가 · 이미 있음 ${num(t.skipped)}건`); render(); },
+  upcare: async el => { const rows = await readSheet(el.files[0]); let n = 0; for (const c of chunks(rows)) n += await rpc('admin_import_creators', { p_rows: c }); alert(`${num(n)}명 갱신했습니다`); render(); }
+};
+app.addEventListener('click', async e => {
+  const t = e.target.closest('[data-tab]'); if (t) { S.tab = t.dataset.tab; S.page = 0; return render(); }
+  const el = e.target.closest('[data-act]'); if (!el || !ACT[el.dataset.act]) return;
+  try { el.disabled = true; await ACT[el.dataset.act](el); } catch (err) { toast(err.message); } finally { el.disabled = false; }
+});
+app.addEventListener('change', async e => {
+  const el = e.target.closest('[data-chg]'); if (!el || !CHG[el.dataset.chg]) return;
+  try { await CHG[el.dataset.chg](el); } catch (err) { toast(err.message); }
+});
+boot();
+</script>
+</body>
+</html>
